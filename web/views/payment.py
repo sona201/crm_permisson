@@ -1,4 +1,4 @@
-from django.shortcuts import HttpResponse, render, redirect
+from django.shortcuts import render, redirect
 
 from web import models
 from web.forms.payment import PaymentForm, PaymentUserForm
@@ -38,12 +38,12 @@ def payment_edit(request, pid):
     """
     obj = models.Payment.objects.get(id=pid)
     if request.method == 'GET':
-        form = PaymentForm(instance=obj)  # instance是什么意思
+        form = PaymentForm(instance=obj)
         return render(request, 'payment_edit.html', {'form': form})
     form = PaymentForm(data=request.POST, instance=obj)
     if form.is_valid():
         form.save()
-        return redirect('/payment/list')
+        return redirect('/payment/list/')
     return render(request, 'payment_edit.html', {'form': form})
 
 

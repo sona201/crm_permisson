@@ -28,8 +28,8 @@ class RbacMiddleware(MiddlewareMixin):
         # http://127.0.0.1:8000/customer/list?age=0    ->   /customer/list/
 
         current_url = request.path_info
-        for vaild_url in settings.VALID_URL_LIST:
-            if re.match(vaild_url, current_url):
+        for valid_url in settings.VALID_URL_LIST:
+            if re.match(valid_url, current_url):
                 # 白名单中的URL无需权限验证即可访问
                 return None  # return None 等于中间件不拦截
 
@@ -42,10 +42,23 @@ class RbacMiddleware(MiddlewareMixin):
 
         flag = False
 
-        for url in permission_list:
-            reg = "^%s$" % url
+        url_record = [
+            {'title': '首页', 'url': '#'}
+        ]
+
+        for item in permission_list:
+            reg = "^%s$" % item['url']
             if re.match(reg, current_url):
                 flag = True
+                request.current_selected_permission = item['pid'] or item['id']
+                if not item['pid']:
+                    url_record.extend([{'title': item['title'], 'url': item['url'], 'class': 'active'}])
+                else:
+                    url_record.extend([
+                        {'title': item['p_title'], 'url': item['p_url']},
+                        {'title': item['title'], 'url': item['url'], 'class': 'active'},
+                    ])
+                request.breadcrumb = url_record
                 break
 
         if not flag:

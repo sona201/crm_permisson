@@ -23,34 +23,32 @@ def customer_list(request):
 def customer_add(request):
     """
     新增客户
-    :param request:
     :return:
     """
     if request.method == 'GET':
         form = CustomerForm()
-        return render(request, 'customer_add.html', {'form': form})
+        return render(request, 'customer_edit.html', {'form': form})
     form = CustomerForm(data=request.POST)
     if form.is_valid():
         form.save()
         return redirect('/customer/list/')
-    return render(request, 'customer_add.html', {'form': form})
+    return render(request, 'customer_edit.html', {'form': form})
 
 
 def customer_edit(request, cid):
     """
     编辑客户
-    :param request:
     :return:
     """
     obj = models.Customer.objects.get(id=cid)
     if request.method == 'GET':
         form = CustomerForm(instance=obj)
-        return render(request, 'customer.html', {'form': form})
+        return render(request, 'customer_add.html', {'form': form})
     form = CustomerForm(data=request.POST, instance=obj)
     if form.is_valid():
         form.save()
         return redirect('/customer/list/')
-    return render(request, 'customer_edit.html', {'form': form})
+    return render(request, 'customer_add.html', {'form': form})
 
 
 def customer_del(request, cid):
